@@ -26,7 +26,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // CRON JOB: Runs every day at 8 AM
-cron.schedule("35 19 * * *", async () => {
+cron.schedule("00 20 * * *", async () => {
   console.log("⏰ Checking for upcoming renewals...");
 
   const now = new Date();
@@ -72,6 +72,7 @@ app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 
 });
+
 
 
 
