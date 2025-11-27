@@ -20,7 +20,7 @@ const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // CRON JOB: Runs every day at 
-cron.schedule("35 18 * * *", async () => {
+cron.schedule("55 19 * * *", async () => {
   console.log("⏰ Checking for upcoming renewals...");
 
   const now = new Date();
@@ -78,3 +78,4 @@ app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 
 });
+
