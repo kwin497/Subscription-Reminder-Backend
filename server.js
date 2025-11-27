@@ -26,7 +26,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // CRON JOB: Runs every day at 
-cron.schedule("45 12 * * *", async () => {
+cron.schedule("20 13 * * *", async () => {
   console.log("⏰ Checking for upcoming renewals...");
 
   const now = new Date();
@@ -44,10 +44,11 @@ for (const userDoc of usersSnapshot.docs) {
   console.log(`Processing user ID: ${uid} with email: ${userEmail}`);
 
   if (!userEmail) continue; // skip if user has no email
-  // 3. ADD THIS LOG: Check if we found any subscriptions
-  console.log(`Found ${subSnapshot.docs.length} subscriptions for ${uid}.`);
+  
 
   const subSnapshot = await db.collection(`users/${uid}/subdata`).get();
+  // 3. ADD THIS LOG: Check if we found any subscriptions
+  console.log(`Found ${subSnapshot.docs.length} subscriptions for ${uid}.`);
 
   for (const subDoc of subSnapshot.docs) {
     const data = subDoc.data();
@@ -84,6 +85,7 @@ app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 
 });
+
 
 
 
