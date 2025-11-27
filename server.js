@@ -25,6 +25,7 @@ const transporter = nodemailer.createTransport({
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS,
   },
+  family: 4,
   tls: {
         // Required on some hosts to prevent certificate validation errors
         rejectUnauthorized: false
@@ -32,7 +33,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // CRON JOB: Runs every day at 
-cron.schedule("05 14 * * *", async () => {
+cron.schedule("30 14 * * *", async () => {
   console.log("⏰ Checking for upcoming renewals...");
 
   const now = new Date();
@@ -91,6 +92,7 @@ app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 
 });
+
 
 
 
