@@ -18,11 +18,17 @@ const db = admin.firestore();
 
 // Email transporter from ENV variables
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com", // Explicitly set the host
+    port: 465,             // Use the reliable port 465
+    secure: true,          // MUST be true for port 465 (SSL)
   auth: {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS,
   },
+  tls: {
+        // Required on some hosts to prevent certificate validation errors
+        rejectUnauthorized: false
+    }
 });
 
 // CRON JOB: Runs every day at 
@@ -85,6 +91,7 @@ app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 
 });
+
 
 
 
