@@ -25,8 +25,8 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// CRON JOB: Runs every day at 8 AM
-cron.schedule("52 03 * * *", async () => {
+// CRON JOB: Runs every day at 
+cron.schedule("30 05 * * *", async () => {
   console.log("⏰ Checking for upcoming renewals...");
 
   const now = new Date();
@@ -35,30 +35,36 @@ cron.schedule("52 03 * * *", async () => {
 
   const usersSnapshot = await db.collection("users").get();
 
-  for (const userDoc of usersSnapshot.docs) {
-    const uid = userDoc.id;
+for (const userDoc of usersSnapshot.docs) {
+  const uid = userDoc.id;
+  const userEmail = userDoc.data().email;  // <-- GET USER EMAIL
 
-    const subSnapshot = await db.collection(`users/${uid}/subdata`).get();
+  if (!userEmail) continue; // skip if user has no email
 
-    for (const subDoc of subSnapshot.docs) {
-      const data = subDoc.data();
+  const subSnapshot = await db.collection(`users/${uid}/subdata`).get();
 
-      if (!data.date || !data.email) continue;
+  for (const subDoc of subSnapshot.docs) {
+    const data = subDoc.data();
 
-      const renewalDate = new Date(data.date);
+    if (!data.date) continue;
 
-      if (renewalDate.toDateString() === tomorrow.toDateString()) {
-        await transporter.sendMail({
-          from: `"Suby Reminder" <${process.env.MAIL_USER}>`,
-          to: data.email,
-          subject: "Subscription Renewal Reminder",
-          text: `Hi! Your subscription for ${data.name} renews on ${data.date}.`,
-        });
+    const renewalDate = new Date(data.date);
 
-        console.log(`📧 Sent reminder to ${data.email} for ${data.name}`);
-      }
+    if (renewalDate.toDateString() === tomorrow.toDateString()) {
+      await transporter.sendMail({
+        from: `"Suby Reminder" <${process.env.MAIL_USER}>`,
+        to: userEmail,  // <-- USE USER EMAIL HERE
+        subject: "Subscription Renewal Reminder",
+        text: `Hi! Your subscription for ${data.name} renews on ${data.date}.`,
+      });
+
+      console.log(`📧 Sent reminder to ${userEmail} for ${data.name}`);
     }
   }
+}
+
+
+      
 });
 
 // Basic route to confirm server is running
@@ -72,6 +78,7 @@ app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 
 });
+
 
 
 
