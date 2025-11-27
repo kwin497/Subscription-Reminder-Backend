@@ -16,24 +16,17 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-// Email transporter from ENV variables
+// Email transporter from ENV variables (using SendGrid API Key)
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com", // Explicitly set the host
-    port: 587,             
-    secure: false,          
-  auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
-  },
-  family: 4,
-  tls: {
-        // Required on some hosts to prevent certificate validation errors
-        rejectUnauthorized: false
-    }
+    service: 'SendGrid', // Use the SendGrid service identifier
+    auth: {
+        user: 'apikey', // This is the standard username for SendGrid API keys
+        pass: process.env.SENDGRID_API_KEY, // Use the new API key variable
+    }
 });
 
 // CRON JOB: Runs every day at 
-cron.schedule("30 14 * * *", async () => {
+cron.schedule("10 17 * * *", async () => {
   console.log("⏰ Checking for upcoming renewals...");
 
   const now = new Date();
@@ -92,6 +85,7 @@ app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 
 });
+
 
 
 
